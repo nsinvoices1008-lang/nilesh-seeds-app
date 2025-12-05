@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>निलेश सीड्स - Agriculture Retail App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        .login-screen, .dashboard {
+            display: none;
+        }
+
+        .login-screen.active, .dashboard.active {
+            display: block;
+        }
+
+        /* Login Screen */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .language-selector button {
+            padding: 8px 16px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .language-selector button.active {
+            background: white;
+            color: #25D366;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #25D366;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            color: #667781;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E9EDEF;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #25D366;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #128C7E;
+        }
+
+        .login-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #E7F3FF;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-info p {
+            color: #1976D2;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            background: #ECE5DD;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header h1 {
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #25D366;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dashboard-content {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        .chat-view {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background: #25D366;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-call-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #25D366;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+        }
+
+        .weather-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .weather-icon {
+            font-size: 48px;
+        }
+
+        .weather-temp {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .messages-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #ECE5DD;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .message.sent .message-content {
+            background: #DCF8C6;
+        }
+
+        .message.received .message-content {
+            background: white;
+        }
+
+        .message-input-form {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #E9EDEF;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #E9EDEF;
+            border-radius: 25px;
+            font-size: 15px;
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .bottom-nav button {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: #667781;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bottom-nav button.active {
+            color: #25D366;
+            font-weight: 600;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: #25D366;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            border: 1px solid #E9EDEF;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #25D366;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .login-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-screen active" id="loginScreen">
+            <div class="language-selector">
+                <button onclick="changeLanguage('hindi')" class="active" id="langHindi">हिंदी</button>
+                <button onclick="changeLanguage('english')" id="langEnglish">English</button>
+                <button onclick="changeLanguage('marathi')" id="langMarathi">मराठी</button>
+            </div>
+            
+            <div class="login-card">
+                <div class="logo">
+                    <div class="logo-icon">🌾</div>
+                    <h1>निलेश सीड्स</h1>
+                    <p class="tagline" id="tagline">आपके खेती के साथी</p>
+                </div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label id="usernameLabel">उपयोगकर्ता नाम</label>
+                        <input type="text" id="username" placeholder="अपना नाम दर्ज करें" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label id="passwordLabel">पासवर्ड</label>
+                        <input type="password" id="password" placeholder="फोन नंबर दर्ज करें" required>
+                    </div>
+                    
+                    <div class="error" id="error">गलत लॉगिन जानकारी</div>
+                    
+                    <button type="submit" class="login-btn" id="loginBtn">लॉगिन करें</button>
+                </form>
+                
+                <div class="login-info">
+                    <p id="farmerInfo">ℹ️ किसान: नाम और फोन नंबर से लॉगिन करें</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="dashboard-header">
+                <h1 id="dashboardTitle">🌾 निलेश सीड्स</h1>
+                <div class="user-info">
+                    <span id="currentUser"></span>
+                    <button class="logout-btn" onclick="handleLogout()" id="logoutBtn">लॉगआउट</button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- Chat Tab -->
+                <div class="tab-content active" id="chatTab">
+                    <div class="chat-view">
+                        <div class="chat-header">
+                            <h2 id="chatTitle">रिटेलर से बात करें</h2>
+                            <button class="video-call-btn" onclick="alert('Video call feature - Integrate WebRTC/Agora')">
+                                📹 <span id="videoCallText">वीडियो कॉल</span>
+                            </button>
+                        </div>
+                        
+                        <div class="weather-widget">
+                            <h3>🌤️ <span id="weatherTitle">मौसम</span></h3>
+                            <div class="weather-content">
+                                <div class="weather-main">
+                                    <span class="weather-icon">⛅</span>
+                                    <span class="weather-temp">28°C</span>
+                                </div>
+                                <div>
+                                    <div>💧 <span id="humidityText">नमी</span>: 65%</div>
+                                    <div>💨 <span id="windText">हवा की गति</span>: 12 km/h</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="messages-container" id="messagesContainer">
+                            <!-- Messages will appear here -->
+                        </div>
+                        
+                        <form class="message-input-form" onsubmit="sendMessage(event)">
+                            <input type="text" class="message-input" id="messageInput" placeholder="संदेश लिखें...">
+                            <button type="submit" class="send-btn">📤</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div class="tab-content" id="productsTab">
+                    <div class="card">
+                        <h2>🛒 <span id="productsTitle">उत्पाद सूची</span></h2>
+                        <div class="grid">
+                            <div class="product-card">
+                                <h3>गेहूं के बीज</h3>
+                                <p>कीमत: ₹500</p>
+                                <p>स्टॉक: 100</p>
+                                <button class="btn btn-primary">कार्ट में जोड़ें</button>
+                            </div>
+                            <div class="product-card">
+                                <h3>धान के बीज</h3>
+                                <p>कीमत: ₹450</p>
+                                <p>स्टॉक: 150</p>
+                                <button class="btn btn-primary">कार्ट में जोड़ें</button>
+                            </div>
+                            <div class="product-card">
+                                <h3>उर्वरक</h3>
+                                <p>कीमत: ₹800</p>
+                                <p>स्टॉक: 75</p>
+                                <button class="btn btn-primary">कार्ट में जोड़ें</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div class="tab-content" id="ordersTab">
+                    <div class="card">
+                        <h2>📦 <span id="ordersTitle">मेरे ऑर्डर</span></h2>
+                        <p>कोई ऑर्डर नहीं मिला</p>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-content" id="settingsTab">
+                    <div class="card">
+                        <h2>⚙️ <span id="settingsTitle">सेटिंग्स</span></h2>
+                        <div>
+                            <h3>भाषा</h3>
+                            <button class="btn btn-primary" onclick="changeLanguage('hindi')">हिंदी</button>
+                            <button class="btn btn-primary" onclick="changeLanguage('english')">English</button>
+                            <button class="btn btn-primary" onclick="changeLanguage('marathi')">मराठी</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retailer-only tabs -->
+                <div class="tab-content" id="locationsTab">
+                    <div class="card">
+                        <h2>📍 किसानों के स्थान</h2>
+                        <p>किसानों की लोकेशन यहाँ दिखाई देगी</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="ledgerTab">
+                    <div class="card">
+                        <h2>📊 डिजिटल खाता बही</h2>
+                        <p>लेनदेन का विवरण यहाँ दिखाई देगा</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="bottom-nav" id="bottomNav">
+                <!-- Navigation buttons will be added by JavaScript -->
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'hindi';
+        let currentUser = null;
+        let messages = [];
+
+        const translations = {
+            hindi: {
+                tagline: 'आपके खेती के साथी',
+                username: 'उपयोगकर्ता नाम',
+                password: 'पासवर्ड',
+                login: 'लॉगिन करें',
+                logout: 'लॉगआउट',
+                farmerInfo: 'किसान: नाम और फोन नंबर से लॉगिन करें',
+                chat: 'चैट',
+                products: 'उत्पाद',
+                orders: 'ऑर्डर',
+                settings: 'सेटिंग्स',
+                locations: 'स्थान',
+                ledger: 'खाता बही',
+                videoCall: 'वीडियो कॉल',
+                weather: 'मौसम',
+                humidity: 'नमी',
+                windSpeed: 'हवा की गति'
+            },
+            english: {
+                tagline: 'Your Farming Partner',
+                username: 'Username',
+                password: 'Password',
+                login: 'Login',
+                logout: 'Logout',
+                farmerInfo: 'Farmers: Login with name and phone number',
+                chat: 'Chat',
+                products: 'Products',
+                orders: 'Orders',
+                settings: 'Settings',
+                locations: 'Locations',
+                ledger: 'Ledger',
+                videoCall: 'Video Call',
+                weather: 'Weather',
+                humidity: 'Humidity',
+                windSpeed: 'Wind Speed'
+            },
+            marathi: {
+                tagline: 'तुमचा शेती साथी',
+                username: 'वापरकर्ता नाव',
+                password: 'पासवर्ड',
+                login: 'लॉगिन करा',
+                logout: 'लॉगआउट',
+                farmerInfo: 'शेतकरी: नाव आणि फोन नंबर वापरून लॉगिन करा',
+                chat: 'चॅट',
+                products: 'उत्पादने',
+                orders: 'ऑर्डर',
+                settings: 'सेटिंग्ज',
+                locations: 'स्थाने',
+                ledger: 'खातेवही',
+                videoCall: 'व्हिडिओ कॉल',
+                weather: 'हवामान',
+                humidity: 'आर्द्रता',
+                windSpeed: 'वाऱ्याचा वेग'
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            const t = translations[lang];
+            
+            // Update login screen
+            document.getElementById('tagline').textContent = t.tagline;
+            document.getElementById('usernameLabel').textContent = t.username;
+            document.getElementById('passwordLabel').textContent = t.password;
+            document.getElementById('loginBtn').textContent = t.login;
+            document.getElementById('farmerInfo').textContent = 'ℹ️ ' + t.farmerInfo;
+            
+            // Update dashboard
+            document.getElementById('logoutBtn').textContent = t.logout;
+            document.getElementById('videoCallText').textContent = t.videoCall;
+            document.getElementById('weatherTitle').textContent = t.weather;
+            document.getElementById('humidityText').textContent = t.humidity;
+            document.getElementById('windText').textContent = t.windSpeed;
+            
+            // Update language buttons
+            document.querySelectorAll('.language-selector button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('lang' + lang.charAt(0).toUpperCase() + lang.slice(1)).classList.add('active');
+            
+            localStorage.setItem('language', lang);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Retailer login
+            if (username === 'Nilesh Seeds' && password === '1008') {
+                currentUser = { username, role: 'retailer' };
+                showDashboard();
+                return;
+            }
+            
+            // Farmer login
+            if (username && password.length >= 10) {
+                currentUser = { username, role: 'farmer', phone: password };
+                
+                // Request location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            currentUser.location = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            };
+                            showDashboard();
+                        },
+                        () => showDashboard()
+                    );
+                } else {
+                    showDashboard();
+                }
+                return;
+            }
+            
+            document.getElementById('error').classList.add('show');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('currentUser').textContent = currentUser.username;
+            
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            // Setup navigation
+            setupNavigation();
+        }
+
+        function setupNavigation() {
+            const t = translations[currentLanguage];
+            const nav = document.getElementById('bottomNav');
+            
+            if (currentUser.role === 'farmer') {
+                nav.innerHTML = `
+                    <button onclick="switchTab('chat')" class="active">💬<br/>${t.chat}</button>
+                    <button onclick="switchTab('products')">🛒<br/>${t.products}</button>
+                    <button onclick="switchTab('orders')">📦<br/>${t.orders}</button>
+                    <button onclick="switchTab('settings')">⚙️<br/>${t.settings}</button>
+                `;
+            } else {
+                nav.innerHTML = `
+                    <button onclick="switchTab('chat')" class="active">💬<br/>${t.chat}</button>
+                    <button onclick="switchTab('locations')">📍<br/>${t.locations}</button>
+                    <button onclick="switchTab('products')">📦<br/>${t.products}</button>
+                    <button onclick="switchTab('orders')">🛒<br/>${t.orders}</button>
+                    <button onclick="switchTab('ledger')">📊<br/>${t.ledger}</button>
+                    <button onclick="switchTab('settings')">⚙️<br/>${t.settings}</button>
+                `;
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('button').classList.add('active');
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const message = {
+                sender: currentUser.username,
+                text: text,
+                timestamp: new Date(),
+                type: 'sent'
+            };
+            
+            messages.push(message);
+            displayMessage(message);
+            input.value = '';
+            
+            // Simulate response
+            if (currentUser.role === 'farmer') {
+                setTimeout(() => {
+                    const response = {
+                        sender: 'Nilesh Seeds',
+                        text: 'धन्यवाद! हम जल्द ही आपसे संपर्क करेंगे।',
+                        timestamp: new Date(),
+                        type: 'received'
+                    };
+                    messages.push(response);
+                    displayMessage(response);
+                }, 1000);
+            }
+        }
+
+        function displayMessage(message) {
+            const container = document.getElementById('messagesContainer');
+            const div = document.createElement('div');
+            div.className = `message ${message.type}`;
+            div.innerHTML = `
+                <div class="message-content">
+                    <p>${message.text}</p>
+                    <small>${new Date(message.timestamp).toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' })}</small>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            messages = [];;
+            localStorage.removeItem('user');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('messagesContainer').innerHTML = '';
+        }
+
+        // Load saved data on page load
+        window.onload = function() {
+            const savedLang = localStorage.getItem('language');
+            if (savedLang) changeLanguage(savedLang);
+            
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+        };
+    </script>
+</body>
+</html>
