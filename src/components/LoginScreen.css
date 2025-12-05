@@ -1,0 +1,128 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  padding: 20px;
+}
+
+.language-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.language-selector button {
+  padding: 8px 16px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.language-selector button.active {
+  background: white;
+  color: #25D366;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo-icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.logo h1 {
+  color: #25D366;
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  color: #667781;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #000;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #E9EDEF;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #25D366;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background: #128C7E;
+}
+
+.login-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: #E7F3FF;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-info p {
+  color: #1976D2;
+  font-size: 14px;
+  margin: 0;
+}
