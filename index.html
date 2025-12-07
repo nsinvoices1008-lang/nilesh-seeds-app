@@ -14,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            background: #E9EDEF;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -159,41 +159,537 @@
             padding: 10px;
         }
 
-        .link-btn:hover {
-            color: #1ea952;
+        /* App Header */
+        .app-header {
+            background: #25D366;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* Dashboard Placeholder */
-        .dashboard-placeholder {
-            background: white;
-            border-radius: 16px;
-            padding: 40px 20px;
-            margin: 20px;
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #dc3545;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 600;
+            min-width: 18px;
             text-align: center;
         }
 
-        .dashboard-placeholder h2 {
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
             color: #25D366;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
-        .dashboard-placeholder p {
+        .card-label {
+            font-size: 14px;
             color: #667781;
+        }
+
+        /* Chat List */
+        .chat-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #E9EDEF;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-item:hover {
+            background: #F0F2F5;
+        }
+
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 3px;
+        }
+
+        .chat-message {
+            font-size: 14px;
+            color: #667781;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #667781;
+        }
+
+        .unread-badge {
+            background: #25D366;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #25D366;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #E9EDEF;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .message-sent {
+            background: #D9FDD3;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message-received {
+            background: white;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #E9EDEF;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #E9EDEF;
+            border-radius: 25px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E9EDEF;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: #667781;
+            cursor: pointer;
+            padding: 5px 15px;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: #25D366;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Proximity Alert */
+        .proximity-alert {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff9800;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+            animation: slideDown 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .proximity-alert.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+        }
+
+        .menu-overlay.show {
+            display: block;
+        }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 201;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .menu-panel.show {
+            right: 0;
+        }
+
+        .menu-header {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #E9EDEF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-item:hover {
+            background: #F0F2F5;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            width: 30px;
+        }
+
+        /* Farmer Profile */
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             margin-bottom: 20px;
         }
 
-        @media (max-width: 480px) {
-            .auth-card {
-                padding: 25px 15px;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .profile-info h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .profile-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #E9EDEF;
+        }
+
+        .profile-detail:last-child {
+            border-bottom: none;
+        }
+
+        .detail-icon {
+            font-size: 20px;
+            width: 30px;
+            color: #25D366;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-call {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-video {
+            background: #0088cc;
+            color: white;
+        }
+
+        .btn-ledger {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-chat {
+            background: #128C7E;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
             }
 
-            .logo h1 {
-                font-size: 24px;
+            .chat-window {
+                height: calc(100vh - 120px);
             }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #667781;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
+    <!-- Proximity Alert -->
+    <div id="proximityAlert" class="proximity-alert"></div>
+
+    <!-- Menu Overlay -->
+    <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
+    <div id="menuPanel" class="menu-panel">
+        <div class="menu-header">
+            <h2>मेनू</h2>
+        </div>
+        <div class="menu-item" onclick="changeLanguage()">
+            <span class="menu-icon">🌐</span>
+            <span>भाषा बदलें</span>
+        </div>
+        <div class="menu-item" onclick="logout()">
+            <span class="menu-icon">🚪</span>
+            <span>लॉगआउट</span>
+        </div>
+    </div>
+
     <!-- Login Screen -->
     <div id="loginScreen" class="screen active">
         <div class="container">
@@ -260,27 +756,196 @@
 
     <!-- Admin Dashboard -->
     <div id="adminDashboard" class="screen">
-        <div class="dashboard-placeholder">
-            <h2>✅ Admin Dashboard</h2>
-            <p>Welcome, <strong id="adminName">Nilesh Seeds</strong>!</p>
-            <p>Login successful. Full dashboard features coming soon.</p>
-            <button class="btn btn-primary" onclick="logout()" style="max-width: 200px; margin: 20px auto;">Logout</button>
+        <div class="app-header">
+            <div class="header-title">निलेश सीड्स</div>
+            <div class="header-icons">
+                <button class="icon-btn" onclick="showNotifications()">
+                    🔔
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <button class="icon-btn" onclick="openMenu()">☰</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">कुल किसान</div>
+                    <div class="card-icon">👨‍🌾</div>
+                </div>
+                <div class="card-value" id="totalFarmers">0</div>
+                <div class="card-label">पंजीकृत किसान</div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">आज के संदेश</div>
+                    <div class="card-icon">💬</div>
+                </div>
+                <div class="card-value" id="todayMessages">0</div>
+                <div class="card-label">नए संदेश</div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">नजदीक किसान</div>
+                    <div class="card-icon">📍</div>
+                </div>
+                <div class="card-value" id="nearbyFarmers">0</div>
+                <div class="card-label">100 मीटर के भीतर</div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">कुल लेनदेन</div>
+                    <div class="card-icon">💰</div>
+                </div>
+                <div class="card-value">₹0</div>
+                <div class="card-label">इस महीने</div>
+            </div>
+        </div>
+
+        <div style="padding: 15px;">
+            <h3 style="margin-bottom: 15px; color: #000;">किसान चैट</h3>
+            <div class="chat-list" id="adminChatList">
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div>कोई चैट नहीं</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">होम</div>
+            </div>
+            <div class="nav-item" onclick="showAdminChats()">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">चैट</div>
+                <span id="chatBadge" class="notification-badge" style="display: none;">0</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👨‍🌾</div>
+                <div class="nav-label">किसान</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">रिपोर्ट</div>
+            </div>
         </div>
     </div>
 
     <!-- Farmer Dashboard -->
     <div id="farmerDashboard" class="screen">
-        <div class="dashboard-placeholder">
-            <h2>✅ Farmer Dashboard</h2>
-            <p>Welcome, <strong id="farmerName"></strong>!</p>
-            <p>Login successful. Full dashboard features coming soon.</p>
-            <button class="btn btn-primary" onclick="logout()" style="max-width: 200px; margin: 20px auto;">Logout</button>
+        <div class="app-header">
+            <div class="header-title">निलेश सीड्स</div>
+            <div class="header-icons">
+                <button class="icon-btn" onclick="openMenu()">☰</button>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar" id="farmerAvatar">👨‍🌾</div>
+                <div class="profile-info">
+                    <h2 id="farmerName"></h2>
+                    <div style="color: #667781; font-size: 14px;" id="farmerVillage"></div>
+                </div>
+            </div>
+
+            <div class="profile-detail">
+                <div class="detail-icon">📱</div>
+                <div id="farmerPhone"></div>
+            </div>
+
+            <div class="profile-detail">
+                <div class="detail-icon">📍</div>
+                <div id="farmerAddress"></div>
+            </div>
+
+            <div class="profile-detail">
+                <div class="detail-icon">🌍</div>
+                <div id="farmerLocation">स्थान प्राप्त कर रहे हैं...</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn btn-call" onclick="makeCall()">
+                    📞 कॉल करें
+                </button>
+                <button class="action-btn btn-video" onclick="makeVideoCall()">
+                    📹 वीडियो कॉल
+                </button>
+                <button class="action-btn btn-chat" onclick="openFarmerChat()">
+                    💬 चैट करें
+                </button>
+                <button class="action-btn btn-ledger" onclick="openLedger()">
+                    📒 खाता देखें
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">होम</div>
+            </div>
+            <div class="nav-item" onclick="openFarmerChat()">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">चैट</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🛒</div>
+                <div class="nav-label">ऑर्डर</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">प्रोफाइल</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div id="chatScreen" class="screen">
+        <div class="chat-window">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">←</button>
+                <div class="chat-avatar" id="chatAvatar">N</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600;" id="chatName">निलेश सीड्स</div>
+                    <div style="font-size: 12px; opacity: 0.9;">ऑनलाइन</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div>कोई संदेश नहीं</div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="messageInput" placeholder="संदेश लिखें...">
+                <button class="send-btn" onclick="sendMessage()">📤</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // Constants
+        const SHOP_LOCATION = {
+            lat: 26.8467,
+            lng: 80.9462,
+            name: "निलेश सीड्स"
+        };
+
+        const PROXIMITY_THRESHOLD = 100; // meters
+
         // App State
         let currentUser = null;
+        let farmerLocation = null;
+        let locationWatchId = null;
+        let proximityCheckInterval = null;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -291,25 +956,23 @@
 
         // Setup Event Listeners
         function setupEventListeners() {
-            // Login form
             const loginForm = document.getElementById('loginForm');
             const loginBtn = document.getElementById('loginBtn');
-            
             loginForm.addEventListener('submit', handleLogin);
             loginBtn.addEventListener('click', handleLogin);
 
-            // Register form
             const registerForm = document.getElementById('registerForm');
             const registerBtn = document.getElementById('registerBtn');
-            
             registerForm.addEventListener('submit', handleRegister);
             registerBtn.addEventListener('click', handleRegister);
 
-            // Navigation buttons
             document.getElementById('showRegisterBtn').addEventListener('click', () => showScreen('registerScreen'));
             document.getElementById('showLoginBtn').addEventListener('click', () => showScreen('loginScreen'));
 
-            console.log('Event listeners set up');
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
         }
 
         // Show Screen
@@ -318,7 +981,6 @@
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
-            console.log('Showing screen:', screenId);
         }
 
         // Handle Login
@@ -327,8 +989,6 @@
             
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-
-            console.log('Login attempt:', username);
 
             if (!username || !password) {
                 showError('loginError', 'कृपया सभी फ़ील्ड भरें');
@@ -343,9 +1003,7 @@
                     name: 'Nilesh Seeds'
                 };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                document.getElementById('adminName').textContent = currentUser.name;
-                showScreen('adminDashboard');
-                console.log('Admin login successful');
+                showAdminDashboard();
                 return;
             }
 
@@ -356,9 +1014,7 @@
             if (user) {
                 currentUser = { ...user, role: 'farmer' };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                document.getElementById('farmerName').textContent = currentUser.name;
-                showScreen('farmerDashboard');
-                console.log('Farmer login successful');
+                showFarmerDashboard();
             } else {
                 showError('loginError', 'गलत उपयोगकर्ता नाम या पासवर्ड');
             }
@@ -373,8 +1029,6 @@
             const village = document.getElementById('regVillage').value.trim();
             const address = document.getElementById('regAddress').value.trim();
             const password = document.getElementById('regPassword').value;
-
-            console.log('Register attempt:', name, phone);
 
             if (!name || !phone || !village || !address || !password) {
                 showError('registerError', 'कृपया सभी फ़ील्ड भरें');
@@ -408,16 +1062,315 @@
 
             showSuccess('registerSuccess', 'पंजीकरण सफल! कृपया लॉगिन करें');
             
-            // Clear form
-            document.getElementById('regName').value = '';
-            document.getElementById('regPhone').value = '';
-            document.getElementById('regVillage').value = '';
-            document.getElementById('regAddress').value = '';
-            document.getElementById('regPassword').value = '';
+            document.getElementById('registerForm').reset();
 
             setTimeout(() => {
                 showScreen('loginScreen');
             }, 2000);
+        }
+
+        // Show Admin Dashboard
+        function showAdminDashboard() {
+            showScreen('adminDashboard');
+            updateAdminStats();
+            loadAdminChats();
+        }
+
+        // Show Farmer Dashboard
+        function showFarmerDashboard() {
+            showScreen('farmerDashboard');
+            displayFarmerInfo();
+            startLocationTracking();
+        }
+
+        // Display Farmer Info
+        function displayFarmerInfo() {
+            document.getElementById('farmerName').textContent = currentUser.name;
+            document.getElementById('farmerVillage').textContent = currentUser.village;
+            document.getElementById('farmerPhone').textContent = currentUser.phone;
+            document.getElementById('farmerAddress').textContent = currentUser.address;
+            document.getElementById('farmerAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        }
+
+        // Start Location Tracking
+        function startLocationTracking() {
+            if (!navigator.geolocation) {
+                document.getElementById('farmerLocation').textContent = 'स्थान सेवा उपलब्ध नहीं';
+                return;
+            }
+
+            locationWatchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    farmerLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+
+                    document.getElementById('farmerLocation').textContent = 
+                        `${farmerLocation.lat.toFixed(6)}, ${farmerLocation.lng.toFixed(6)}`;
+
+                    checkProximity();
+                },
+                (error) => {
+                    console.error('Location error:', error);
+                    document.getElementById('farmerLocation').textContent = 'स्थान प्राप्त नहीं हो सका';
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 5000
+                }
+            );
+
+            // Check proximity every 30 seconds
+            proximityCheckInterval = setInterval(checkProximity, 30000);
+        }
+
+        // Calculate Distance (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; // Distance in meters
+        }
+
+        // Check Proximity
+        function checkProximity() {
+            if (!farmerLocation || !currentUser || currentUser.role !== 'farmer') return;
+
+            const distance = calculateDistance(
+                farmerLocation.lat,
+                farmerLocation.lng,
+                SHOP_LOCATION.lat,
+                SHOP_LOCATION.lng
+            );
+
+            if (distance <= PROXIMITY_THRESHOLD) {
+                notifyAdminProximity(distance);
+            }
+        }
+
+        // Notify Admin of Proximity
+        function notifyAdminProximity(distance) {
+            const notification = {
+                farmerId: currentUser.username,
+                farmerName: currentUser.name,
+                distance: Math.round(distance),
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to localStorage for admin
+            const notifications = JSON.parse(localStorage.getItem('proximityNotifications') || '[]');
+            
+            // Check if already notified recently (within 5 minutes)
+            const recentNotification = notifications.find(n => 
+                n.farmerId === currentUser.username && 
+                (new Date() - new Date(n.timestamp)) < 300000
+            );
+
+            if (!recentNotification) {
+                notifications.push(notification);
+                localStorage.setItem('proximityNotifications', JSON.stringify(notifications));
+                
+                // Show alert to farmer
+                showProximityAlert(`आप ${SHOP_LOCATION.name} से ${Math.round(distance)} मीटर दूर हैं`);
+            }
+        }
+
+        // Show Proximity Alert
+        function showProximityAlert(message) {
+            const alert = document.getElementById('proximityAlert');
+            alert.textContent = message;
+            alert.classList.add('show');
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Update Admin Stats
+        function updateAdminStats() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            document.getElementById('totalFarmers').textContent = users.length;
+
+            const notifications = JSON.parse(localStorage.getItem('proximityNotifications') || '[]');
+            const recentNotifications = notifications.filter(n => 
+                (new Date() - new Date(n.timestamp)) < 3600000 // Last hour
+            );
+            document.getElementById('nearbyFarmers').textContent = recentNotifications.length;
+
+            if (recentNotifications.length > 0) {
+                document.getElementById('notificationBadge').textContent = recentNotifications.length;
+                document.getElementById('notificationBadge').style.display = 'block';
+            }
+        }
+
+        // Load Admin Chats
+        function loadAdminChats() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const chatList = document.getElementById('adminChatList');
+
+            if (users.length === 0) {
+                chatList.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div>कोई किसान पंजीकृत नहीं</div></div>';
+                return;
+            }
+
+            chatList.innerHTML = users.map(user => `
+                <div class="chat-item" onclick="openAdminChat('${user.username}')">
+                    <div class="chat-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                    <div class="chat-info">
+                        <div class="chat-name">${user.name}</div>
+                        <div class="chat-message">${user.village}</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">${user.phone}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open Chat
+        function openFarmerChat() {
+            showScreen('chatScreen');
+            document.getElementById('chatName').textContent = 'निलेश सीड्स';
+            document.getElementById('chatAvatar').textContent = 'N';
+            loadMessages('admin');
+        }
+
+        function openAdminChat(farmerId) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const farmer = users.find(u => u.username === farmerId);
+            
+            if (farmer) {
+                showScreen('chatScreen');
+                document.getElementById('chatName').textContent = farmer.name;
+                document.getElementById('chatAvatar').textContent = farmer.name.charAt(0).toUpperCase();
+                loadMessages(farmerId);
+            }
+        }
+
+        // Load Messages
+        function loadMessages(chatWith) {
+            const messages = JSON.parse(localStorage.getItem(`chat_${currentUser.username}_${chatWith}`) || '[]');
+            const container = document.getElementById('chatMessages');
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div>कोई संदेश नहीं</div></div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="message-bubble ${msg.sender === currentUser.username ? 'message-sent' : 'message-received'}">
+                    ${msg.text}
+                    <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString('hi-IN', {hour: '2-digit', minute: '2-digit'})}</div>
+                </div>
+            `).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Send Message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            const chatWith = currentUser.role === 'farmer' ? 'admin' : 
+                            document.getElementById('chatName').textContent;
+
+            const message = {
+                sender: currentUser.username,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+
+            const chatKey = `chat_${currentUser.username}_${chatWith}`;
+            const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+            messages.push(message);
+            localStorage.setItem(chatKey, JSON.stringify(messages));
+
+            input.value = '';
+            loadMessages(chatWith);
+        }
+
+        // Close Chat
+        function closeChat() {
+            if (currentUser.role === 'admin') {
+                showScreen('adminDashboard');
+            } else {
+                showScreen('farmerDashboard');
+            }
+        }
+
+        // Action Functions
+        function makeCall() {
+            window.location.href = 'tel:+919876543210';
+        }
+
+        function makeVideoCall() {
+            alert('वीडियो कॉल सुविधा जल्द आ रही है');
+        }
+
+        function openLedger() {
+            window.open('https://docs.google.com/spreadsheets/d/1example', '_blank');
+        }
+
+        function showNotifications() {
+            const notifications = JSON.parse(localStorage.getItem('proximityNotifications') || '[]');
+            if (notifications.length === 0) {
+                alert('कोई नई सूचना नहीं');
+                return;
+            }
+
+            const message = notifications.map(n => 
+                `${n.farmerName} ${n.distance}m दूर है`
+            ).join('\n');
+            
+            alert(message);
+        }
+
+        // Menu Functions
+        function openMenu() {
+            document.getElementById('menuOverlay').classList.add('show');
+            document.getElementById('menuPanel').classList.add('show');
+        }
+
+        function closeMenu() {
+            document.getElementById('menuOverlay').classList.remove('show');
+            document.getElementById('menuPanel').classList.remove('show');
+        }
+
+        function changeLanguage() {
+            alert('भाषा बदलने की सुविधा जल्द आ रही है');
+            closeMenu();
+        }
+
+        // Logout
+        function logout() {
+            if (locationWatchId) {
+                navigator.geolocation.clearWatch(locationWatchId);
+            }
+            if (proximityCheckInterval) {
+                clearInterval(proximityCheckInterval);
+            }
+
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            farmerLocation = null;
+            
+            showScreen('loginScreen');
+            document.getElementById('loginForm').reset();
+            closeMenu();
         }
 
         // Load User Session
@@ -427,27 +1380,11 @@
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 if (currentUser.role === 'admin') {
-                    document.getElementById('adminName').textContent = currentUser.name;
-                    showScreen('adminDashboard');
+                    showAdminDashboard();
                 } else {
-                    document.getElementById('farmerName').textContent = currentUser.name;
-                    showScreen('farmerDashboard');
+                    showFarmerDashboard();
                 }
-                console.log('User session loaded:', currentUser.username);
             }
-        }
-
-        // Logout
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            showScreen('loginScreen');
-            
-            // Clear login form
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            
-            console.log('User logged out');
         }
 
         // Show Error
@@ -468,6 +1405,11 @@
             setTimeout(() => {
                 element.classList.remove('show');
             }, 3000);
+        }
+
+        function showAdminChats() {
+            // Already on admin dashboard, just scroll to chats
+            document.querySelector('.chat-list').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
