@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>निलेश सीड्स - कृषि रिटेल ऐप</title>
+    <title>निलेश सीड्स - WhatsApp Style</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
 
         * {
             margin: 0;
@@ -15,561 +17,465 @@
         }
 
         :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #34d399;
-            --secondary: #3b82f6;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --white: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --shadow-lg: rgba(0, 0, 0, 0.2);
+            --wa-green: #25D366;
+            --wa-green-dark: #128C7E;
+            --wa-teal: #075E54;
+            --wa-light: #DCF8C6;
+            --wa-bg: #ECE5DD;
+            --wa-white: #FFFFFF;
+            --wa-gray: #F0F0F0;
+            --wa-text: #303030;
+            --wa-blue: #34B7F1;
+            --wa-red: #FF3B30;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            background: var(--wa-bg);
+            margin: 0;
+            padding: 0;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            background-size: cover;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
         }
 
         .screen {
             display: none;
-            animation: fadeIn 0.5s ease;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .screen.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--wa-teal), var(--wa-green-dark));
+            padding: 20px;
         }
 
-        /* Glassmorphism Card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 60px var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 70px var(--shadow-lg);
-        }
-
-        /* Auth Card */
-        .auth-card {
-            max-width: 480px;
-            margin: 60px auto;
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo {
+        .login-logo {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        .logo-icon {
-            font-size: 70px;
-            margin-bottom: 15px;
-            animation: bounce 2s infinite;
+        .login-logo-icon {
+            font-size: 80px;
+            margin-bottom: 10px;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .login-logo h1 {
+            color: var(--wa-green);
+            font-size: 28px;
+            margin-bottom: 5px;
         }
 
-        .logo h1 {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .tagline {
-            color: #6b7280;
-            font-size: 15px;
-            font-weight: 500;
+        .login-logo p {
+            color: #666;
+            font-size: 14px;
         }
 
         .form-group {
-            margin-bottom: 24px;
-            position: relative;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 10px;
-            color: var(--dark);
-            font-weight: 600;
-            font-size: 14px;
-            letter-spacing: 0.3px;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: var(--white);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .error, .success {
-            padding: 14px 18px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            display: none;
-            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--wa-text);
             font-weight: 500;
-            animation: shake 0.5s ease;
+            font-size: 14px;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
         }
 
-        .error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--wa-green);
         }
 
-        .success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
-
-        .error.show, .success.show {
-            display: block;
-        }
-
-        .btn {
-            padding: 16px 24px;
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--wa-green);
+            color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
+        .btn-login:hover {
+            background: var(--wa-green-dark);
         }
 
         .link-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 20px;
-            display: block;
             text-align: center;
+            margin-top: 15px;
+            color: var(--wa-green);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .error {
+            background: #FFEBEE;
+            color: #C62828;
             padding: 12px;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
         }
 
-        .link-btn:hover {
-            color: var(--primary-dark);
-            transform: scale(1.05);
+        .error.show {
+            display: block;
         }
 
-        /* Header */
-        .app-header {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 20px 30px;
-            box-shadow: 0 4px 20px var(--shadow);
-            z-index: 100;
+        .success {
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        /* WhatsApp Header */
+        .wa-header {
+            background: var(--wa-teal);
+            color: white;
+            padding: 12px 16px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .header-left {
+        .wa-header-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            flex: 1;
         }
 
-        .header-title {
+        .wa-back-btn {
             font-size: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
+            cursor: pointer;
+            padding: 5px;
         }
 
-        .header-right {
+        .wa-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--wa-green);
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .profile-icon {
+        .wa-header-info {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .wa-header-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .wa-header-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .wa-header-actions {
+            display: flex;
+            gap: 20px;
+            font-size: 22px;
+        }
+
+        .wa-header-actions span {
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23E5DDD5" width="100" height="100"/><path d="M0 0L50 50L0 100M50 0L100 50L50 100" stroke="%23D1C4B8" stroke-width="0.5" fill="none"/></svg>');
+            background-size: 200px 200px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message.sent .message-bubble {
+            background: var(--wa-light);
+            border-radius: 8px 0 8px 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message-text {
+            font-size: 14px;
+            color: var(--wa-text);
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            text-align: right;
+        }
+
+        .message-attachment {
+            margin-bottom: 8px;
+        }
+
+        .message-attachment img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            background: var(--wa-gray);
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-input-wrapper {
+            flex: 1;
+            background: white;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .input-icon {
+            font-size: 24px;
+            color: #8696A0;
+            cursor: pointer;
+        }
+
+        .send-btn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--wa-green);
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Farmer List (Admin) */
+        .farmer-list {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .farmer-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .farmer-item:hover {
+            background: #F5F5F5;
+        }
+
+        .farmer-item-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--wa-green);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .profile-icon:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .hamburger-btn {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .hamburger-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .hamburger-btn span {
-            width: 24px;
-            height: 3px;
-            background: white;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger-btn.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .hamburger-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger-btn.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-
-        /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
-            transition: all 0.5s ease;
-        }
-
-        .stat-card:hover::before {
-            top: -60%;
-            right: -60%;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px var(--shadow-lg);
-        }
-
-        .stat-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            font-size: 14px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-right: 12px;
+            flex-shrink: 0;
         }
 
-        /* Farmer List */
-        .farmer-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px var(--shadow);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .farmer-item-info {
+            flex: 1;
+            min-width: 0;
         }
 
-        .farmer-card:hover {
-            transform: translateX(10px);
-            box-shadow: 0 8px 25px var(--shadow-lg);
-        }
-
-        .farmer-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .farmer-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .farmer-info h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--dark);
+        .farmer-item-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--wa-text);
             margin-bottom: 4px;
         }
 
-        .farmer-info p {
-            color: #6b7280;
+        .farmer-item-message {
             font-size: 14px;
+            color: #667781;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .farmer-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .action-btn.primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .action-btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .action-btn.secondary {
-            background: linear-gradient(135deg, var(--secondary), #2563eb);
-            color: white;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .action-btn.secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 15px 20px;
-            box-shadow: 0 -4px 20px var(--shadow);
-            display: flex;
-            justify-content: space-around;
-            z-index: 100;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-item {
+        .farmer-item-meta {
             display: flex;
             flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .farmer-item-time {
+            font-size: 12px;
+            color: #667781;
+        }
+
+        .unread-badge {
+            background: var(--wa-green);
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .proximity-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--wa-red);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .farmer-item-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .action-icon-btn {
+            padding: 8px 12px;
+            background: var(--wa-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             gap: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px 15px;
-            border-radius: 12px;
         }
 
-        .nav-item:hover {
-            background: rgba(16, 185, 129, 0.1);
-            transform: translateY(-3px);
+        .action-icon-btn.secondary {
+            background: var(--wa-blue);
         }
 
-        .nav-item.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+        /* Map Container */
+        #map {
+            width: 100%;
+            height: 100%;
         }
 
-        .nav-icon {
-            font-size: 24px;
+        .map-container {
+            flex: 1;
+            position: relative;
         }
 
-        .nav-label {
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* Modal */
+        /* Profile Modal */
         .modal {
             display: none;
             position: fixed;
@@ -577,13 +483,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
         }
 
         .modal.active {
@@ -592,216 +495,227 @@
 
         .modal-content {
             background: white;
-            border-radius: 24px;
-            padding: 35px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
             overflow-y: auto;
-            animation: slideUp 0.4s ease;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 24px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--wa-teal);
         }
 
         .close-btn {
-            width: 40px;
-            height: 40px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: #f3f4f6;
+            background: var(--wa-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 600;
+            margin: 0 auto 20px;
+        }
+
+        .profile-info {
+            background: #F5F5F5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .profile-info-item {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .profile-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .profile-info-label {
+            color: #667781;
+            margin-bottom: 4px;
+        }
+
+        .profile-info-value {
+            color: var(--wa-text);
+            font-weight: 500;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 12px;
             border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .profile-btn.primary {
+            background: var(--wa-green);
+            color: white;
+        }
+
+        .profile-btn.secondary {
+            background: var(--wa-blue);
+            color: white;
+        }
+
+        .profile-btn.danger {
+            background: var(--wa-red);
+            color: white;
+        }
+
+        /* Ledger Input */
+        .ledger-input-group {
+            margin-top: 15px;
+        }
+
+        .ledger-input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Bottom Tabs (Farmer) */
+        .bottom-tabs {
+            background: white;
+            display: flex;
+            border-top: 1px solid #E0E0E0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: #667781;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--wa-green);
+        }
+
+        .tab-icon {
             font-size: 24px;
-            cursor: pointer;
+            margin-bottom: 4px;
+        }
+
+        /* Attachment Preview */
+        .attachment-preview {
+            position: fixed;
+            bottom: 70px;
+            left: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .attachment-preview.active {
+            display: block;
+        }
+
+        .attachment-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+
+        .attachment-preview-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        .notification-toast.active {
+            display: block;
+        }
+
+        .notification-content {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background: #e5e7eb;
-            transform: rotate(90deg);
-        }
-
-        /* Chat */
-        .chat-container {
-            background: white;
-            border-radius: 20px;
-            height: calc(100vh - 200px);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 10px 40px var(--shadow-lg);
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px;
-            background: #f9fafb;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .message.sent {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .message-content {
-            max-width: 70%;
-        }
-
-        .message-bubble {
-            padding: 14px 18px;
-            border-radius: 18px;
-            margin-bottom: 6px;
-            word-wrap: break-word;
-        }
-
-        .message.received .message-bubble {
-            background: white;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 10px var(--shadow);
-        }
-
-        .message.sent .message-bubble {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #9ca3af;
-            padding: 0 10px;
-        }
-
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
             gap: 12px;
         }
 
-        .chat-input {
+        .notification-icon {
+            font-size: 32px;
+        }
+
+        .notification-text {
             flex: 1;
-            padding: 14px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 25px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.3s ease;
         }
 
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
-        .send-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        .notification-message {
+            font-size: 14px;
+            color: #667781;
         }
 
-        .send-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .glass-card {
-                padding: 30px 20px;
-            }
-
-            .auth-card {
-                margin: 30px auto;
-            }
-
-            .logo h1 {
-                font-size: 28px;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .app-header {
-                padding: 15px 20px;
-            }
-
-            .header-title {
-                font-size: 20px;
-            }
-
-            .farmer-actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                width: 100%;
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
+        /* Loading */
+        .loading-spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
@@ -811,313 +725,184 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Dropdown Menu */
-        .dropdown-menu {
-            position: fixed;
-            top: 80px;
-            right: 30px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px var(--shadow-lg);
-            padding: 15px;
-            min-width: 250px;
-            display: none;
-            z-index: 999;
-            animation: slideDown 0.3s ease;
-        }
-
-        .dropdown-menu.active {
-            display: block;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 30px 20px;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .menu-item {
-            padding: 14px 18px;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--dark);
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .menu-item:hover {
-            background: #f3f4f6;
-            transform: translateX(5px);
-        }
-
-        .menu-item.danger {
-            color: var(--danger);
-        }
-
-        .menu-divider {
-            height: 1px;
-            background: #e5e7eb;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
     <div id="loginScreen" class="screen active">
-        <div class="container">
-            <div class="glass-card auth-card">
-                <div class="logo">
-                    <div class="logo-icon">🌾</div>
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-logo">
+                    <div class="login-logo-icon">🌾</div>
                     <h1>निलेश सीड्स</h1>
-                    <p class="tagline">आपका विश्वसनीय कृषि साथी</p>
+                    <p>WhatsApp Style Chat</p>
                 </div>
                 <div id="loginError" class="error"></div>
                 <form id="loginForm">
                     <div class="form-group">
-                        <label>📱 मोबाइल नंबर / उपयोगकर्ता नाम</label>
-                        <input type="text" id="loginUsername" placeholder="अपना मोबाइल नंबर या नाम दर्ज करें" required>
+                        <label>📱 मोबाइल नंबर / नाम</label>
+                        <input type="text" id="loginUsername" placeholder="मोबाइल नंबर या नाम" required>
                     </div>
                     <div class="form-group">
                         <label>🔒 पासवर्ड</label>
-                        <input type="password" id="loginPassword" placeholder="पासवर्ड दर्ज करें" required>
+                        <input type="password" id="loginPassword" placeholder="पासवर्ड" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <span>लॉगिन करें</span>
-                    </button>
+                    <button type="submit" class="btn-login">लॉगिन करें</button>
                 </form>
-                <button class="link-btn" onclick="showScreen('registerScreen')">
-                    नया खाता बनाएं →
-                </button>
+                <div class="link-btn" onclick="showScreen('registerScreen')">नया खाता बनाएं</div>
             </div>
         </div>
     </div>
 
     <!-- Register Screen -->
     <div id="registerScreen" class="screen">
-        <div class="container">
-            <div class="glass-card auth-card">
-                <div class="logo">
-                    <div class="logo-icon">✨</div>
-                    <h1>नया खाता बनाएं</h1>
-                    <p class="tagline">निलेश सीड्स परिवार में शामिल हों</p>
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-logo">
+                    <div class="login-logo-icon">✨</div>
+                    <h1>नया खाता</h1>
+                    <p>रजिस्ट्रेशन फॉर्म</p>
                 </div>
                 <div id="registerError" class="error"></div>
                 <div id="registerSuccess" class="success"></div>
                 <form id="registerForm">
                     <div class="form-group">
                         <label>👤 पूरा नाम</label>
-                        <input type="text" id="regName" placeholder="अपना पूरा नाम दर्ज करें" required>
+                        <input type="text" id="regName" placeholder="नाम" required>
                     </div>
                     <div class="form-group">
                         <label>📱 मोबाइल नंबर</label>
-                        <input type="tel" id="regPhone" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" required>
+                        <input type="tel" id="regPhone" placeholder="10 अंक" maxlength="10" required>
                     </div>
                     <div class="form-group">
                         <label>🏘️ गांव</label>
-                        <input type="text" id="regVillage" placeholder="अपना गांव दर्ज करें" required>
+                        <input type="text" id="regVillage" placeholder="गांव" required>
                     </div>
                     <div class="form-group">
-                        <label>📍 पूरा पता</label>
-                        <textarea id="regAddress" placeholder="अपना पूरा पता दर्ज करें" required></textarea>
+                        <label>📍 पता</label>
+                        <input type="text" id="regAddress" placeholder="पूरा पता" required>
                     </div>
                     <div class="form-group">
                         <label>🔒 पासवर्ड</label>
-                        <input type="password" id="regPassword" placeholder="मजबूत पासवर्ड बनाएं" required>
+                        <input type="password" id="regPassword" placeholder="पासवर्ड" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <span>रजिस्टर करें</span>
-                    </button>
+                    <button type="submit" class="btn-login">रजिस्टर करें</button>
                 </form>
-                <button class="link-btn" onclick="showScreen('loginScreen')">
-                    ← पहले से खाता है? लॉगिन करें
-                </button>
+                <div class="link-btn" onclick="showScreen('loginScreen')">← लॉगिन पर जाएं</div>
             </div>
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
-    <div id="adminDashboard" class="screen">
-        <div class="app-header">
-            <div class="header-left">
-                <div class="header-title">🌾 निलेश सीड्स</div>
-            </div>
-            <div class="header-right">
-                <div class="profile-icon" onclick="toggleDropdown()">👤</div>
-                <div class="hamburger-btn" onclick="toggleDropdown()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+    <!-- Farmer Chat Screen -->
+    <div id="farmerChatScreen" class="screen">
+        <div class="wa-header">
+            <div class="wa-header-left">
+                <div class="wa-avatar" onclick="showProfile()">N</div>
+                <div class="wa-header-info" onclick="showProfile()">
+                    <div class="wa-header-name">निलेश सीड्स</div>
+                    <div class="wa-header-status">ऑनलाइन</div>
                 </div>
+            </div>
+            <div class="wa-header-actions">
+                <span onclick="makeVideoCall()">📹</span>
+                <span onclick="makeVoiceCall()">📞</span>
+                <span onclick="showFarmerMenu()">⋮</span>
             </div>
         </div>
-
-        <div class="dropdown-menu" id="dropdownMenu">
-            <div class="menu-item" onclick="showProfile()">
-                <span>👤</span> प्रोफाइल देखें
+        <div class="chat-container" id="farmerChatMessages"></div>
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <span class="input-icon" onclick="showEmojiPicker()">😊</span>
+                <input type="text" class="chat-input" id="farmerChatInput" placeholder="संदेश लिखें...">
+                <span class="input-icon" onclick="selectAttachment()">📎</span>
+                <input type="file" id="attachmentInput" style="display:none" accept="image/*,video/*,application/pdf">
             </div>
-            <div class="menu-divider"></div>
-            <div class="menu-item danger" onclick="logout()">
-                <span>🚪</span> लॉगआउट
-            </div>
+            <button class="send-btn" onclick="sendFarmerMessage()">📤</button>
         </div>
-
-        <div class="container">
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">👨‍🌾</div>
-                    <div class="stat-value" id="totalFarmers">0</div>
-                    <div class="stat-label">कुल किसान</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💬</div>
-                    <div class="stat-value" id="totalMessages">0</div>
-                    <div class="stat-label">संदेश</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📍</div>
-                    <div class="stat-value" id="nearbyFarmers">0</div>
-                    <div class="stat-label">नजदीकी किसान</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-value" id="totalTransactions">0</div>
-                    <div class="stat-label">लेनदेन</div>
-                </div>
+        <div class="bottom-tabs">
+            <div class="tab-item active">
+                <div class="tab-icon">💬</div>
+                <div>चैट</div>
             </div>
-
-            <div class="glass-card" style="margin-top: 30px;">
-                <h2 style="margin-bottom: 20px; font-size: 22px; font-weight: 700;">👨‍🌾 सभी किसान</h2>
-                <div id="farmersList"></div>
+            <div class="tab-item" onclick="openLedger()">
+                <div class="tab-icon">📒</div>
+                <div>लेजर</div>
             </div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">होम</div>
-            </div>
-            <div class="nav-item" onclick="showAllChats()">
-                <div class="nav-icon">💬</div>
-                <div class="nav-label">चैट</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">📊</div>
-                <div class="nav-label">रिपोर्ट</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">⚙️</div>
-                <div class="nav-label">सेटिंग</div>
+            <div class="tab-item" onclick="showProfile()">
+                <div class="tab-icon">👤</div>
+                <div>प्रोफाइल</div>
             </div>
         </div>
     </div>
 
-    <!-- Farmer Dashboard -->
-    <div id="farmerDashboard" class="screen">
-        <div class="app-header">
-            <div class="header-left">
-                <div class="header-title">🌾 निलेश सीड्स</div>
-            </div>
-            <div class="header-right">
-                <div class="profile-icon" onclick="toggleDropdown()">👤</div>
-                <div class="hamburger-btn" onclick="toggleDropdown()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+    <!-- Admin Farmer List Screen -->
+    <div id="adminListScreen" class="screen">
+        <div class="wa-header">
+            <div class="wa-header-left">
+                <div class="wa-avatar">N</div>
+                <div class="wa-header-info">
+                    <div class="wa-header-name">निलेश सीड्स</div>
+                    <div class="wa-header-status">Admin Panel</div>
                 </div>
+            </div>
+            <div class="wa-header-actions">
+                <span onclick="showAdminMenu()">⋮</span>
             </div>
         </div>
+        <div class="farmer-list" id="adminFarmerList"></div>
+    </div>
 
-        <div class="dropdown-menu" id="farmerDropdown">
-            <div class="menu-item" onclick="showProfile()">
-                <span>👤</span> प्रोफाइल देखें
+    <!-- Admin Chat Screen -->
+    <div id="adminChatScreen" class="screen">
+        <div class="wa-header">
+            <div class="wa-header-left">
+                <span class="wa-back-btn" onclick="backToFarmerList()">←</span>
+                <div class="wa-avatar" id="adminChatAvatar" onclick="showSelectedFarmerProfile()">K</div>
+                <div class="wa-header-info" onclick="showSelectedFarmerProfile()">
+                    <div class="wa-header-name" id="adminChatName">किसान</div>
+                    <div class="wa-header-status" id="adminChatStatus">ऑफलाइन</div>
+                </div>
             </div>
-            <div class="menu-divider"></div>
-            <div class="menu-item danger" onclick="logout()">
-                <span>🚪</span> लॉगआउट
+            <div class="wa-header-actions">
+                <span onclick="showFarmerLocation()">📍</span>
+                <span onclick="makeVideoCall()">📹</span>
+                <span onclick="makeVoiceCall()">📞</span>
+                <span onclick="showAdminChatMenu()">⋮</span>
             </div>
         </div>
-
-        <div class="container">
-            <div class="glass-card">
-                <h2 style="margin-bottom: 20px; font-size: 24px; font-weight: 700;">👋 स्वागत है!</h2>
-                <div class="farmer-header">
-                    <div class="farmer-avatar" id="farmerInitial">K</div>
-                    <div class="farmer-info">
-                        <h3 id="farmerNameDisplay">किसान</h3>
-                        <p id="farmerPhoneDisplay">📱 मोबाइल नंबर</p>
-                        <p id="farmerVillageDisplay">🏘️ गांव</p>
-                    </div>
-                </div>
-                <div class="farmer-actions" style="margin-top: 20px;">
-                    <button class="action-btn primary" onclick="openChat()">
-                        💬 निलेश सीड्स से चैट करें
-                    </button>
-                    <button class="action-btn secondary" onclick="window.open('tel:+919876543210')">
-                        📞 कॉल करें
-                    </button>
-                    <button class="action-btn primary" onclick="alert('लेजर फीचर जल्द आ रहा है!')">
-                        📒 लेजर देखें
-                    </button>
-                </div>
+        <div class="chat-container" id="adminChatMessages"></div>
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <span class="input-icon" onclick="showEmojiPicker()">😊</span>
+                <input type="text" class="chat-input" id="adminChatInput" placeholder="संदेश लिखें...">
+                <span class="input-icon" onclick="selectAttachment()">📎</span>
             </div>
-
-            <div class="dashboard-grid" style="margin-top: 30px;">
-                <div class="stat-card">
-                    <div class="stat-icon">🛒</div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-label">कुल ऑर्डर</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-value">₹0</div>
-                    <div class="stat-label">बकाया राशि</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">होम</div>
-            </div>
-            <div class="nav-item" onclick="openChat()">
-                <div class="nav-icon">💬</div>
-                <div class="nav-label">चैट</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">📦</div>
-                <div class="nav-label">ऑर्डर</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">⚙️</div>
-                <div class="nav-label">सेटिंग</div>
-            </div>
+            <button class="send-btn" onclick="sendAdminMessage()">📤</button>
         </div>
     </div>
 
-    <!-- Chat Modal -->
-    <div id="chatModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <div class="modal-title" id="chatTitle">💬 चैट</div>
-                <button class="close-btn" onclick="closeChat()">×</button>
-            </div>
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input-container">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="संदेश लिखें...">
-                    <button class="send-btn" onclick="sendMessage()">📤</button>
+    <!-- Map Screen -->
+    <div id="mapScreen" class="screen">
+        <div class="wa-header">
+            <div class="wa-header-left">
+                <span class="wa-back-btn" onclick="backToAdminChat()">←</span>
+                <div class="wa-header-info">
+                    <div class="wa-header-name" id="mapFarmerName">किसान का स्थान</div>
+                    <div class="wa-header-status">Live Location</div>
                 </div>
             </div>
+            <div class="wa-header-actions">
+                <span onclick="openInGoogleMaps()">🗺️</span>
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
         </div>
     </div>
 
@@ -1125,29 +910,50 @@
     <div id="profileModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">👤 प्रोफाइल</div>
-                <button class="close-btn" onclick="closeProfile()">×</button>
+                <div class="modal-title">प्रोफाइल</div>
+                <div class="close-btn" onclick="closeProfile()">×</div>
             </div>
             <div id="profileContent"></div>
         </div>
     </div>
 
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast">
+        <div class="notification-content">
+            <div class="notification-icon">🔔</div>
+            <div class="notification-text">
+                <div class="notification-title" id="notifTitle"></div>
+                <div class="notification-message" id="notifMessage"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentUser = null;
-        let currentChatUser = null;
+        let selectedFarmer = null;
+        let locationWatchId = null;
+        let map = null;
+        let shopLocation = { lat: 26.8467, lng: 80.9462 }; // Extracted from Google Maps link
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadUserSession();
             setupEventListeners();
+            if (currentUser?.role === 'farmer') {
+                startLocationTracking();
+            }
         });
 
         function setupEventListeners() {
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
             document.getElementById('registerForm').addEventListener('submit', handleRegister);
-            document.getElementById('chatInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
+            document.getElementById('farmerChatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendFarmerMessage();
             });
+            document.getElementById('adminChatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendAdminMessage();
+            });
+            document.getElementById('attachmentInput').addEventListener('change', handleAttachment);
         }
 
         function showScreen(screenId) {
@@ -1160,31 +966,25 @@
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!username || !password) {
-                showError('loginError', 'कृपया सभी फ़ील्ड भरें');
-                return;
-            }
-
             // Admin login
             if (username === 'Nilesh Seeds' && password === '1008') {
                 currentUser = { username: 'Nilesh Seeds', role: 'admin', name: 'Nilesh Seeds' };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showScreen('adminDashboard');
-                loadAdminDashboard();
+                showScreen('adminListScreen');
+                loadFarmerList();
                 return;
             }
 
-            // Farmer login - check by phone OR name
+            // Farmer login
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => 
-                (u.phone === username || u.name === username) && u.password === password
-            );
+            const user = users.find(u => (u.phone === username || u.name === username) && u.password === password);
 
             if (user) {
                 currentUser = { ...user, role: 'farmer' };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showScreen('farmerDashboard');
-                loadFarmerDashboard();
+                showScreen('farmerChatScreen');
+                loadFarmerChat();
+                startLocationTracking();
             } else {
                 showError('loginError', 'गलत उपयोगकर्ता नाम या पासवर्ड');
             }
@@ -1198,68 +998,24 @@
             const address = document.getElementById('regAddress').value.trim();
             const password = document.getElementById('regPassword').value;
 
-            if (!name || !phone || !village || !address || !password) {
-                showError('registerError', 'कृपया सभी फ़ील्ड भरें');
-                return;
-            }
-
             if (phone.length !== 10 || !/^\d+$/.test(phone)) {
                 showError('registerError', 'मोबाइल नंबर 10 अंकों का होना चाहिए');
                 return;
             }
 
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
             if (users.find(u => u.phone === phone)) {
                 showError('registerError', 'यह मोबाइल नंबर पहले से पंजीकृत है');
                 return;
             }
 
-            const newUser = {
-                name, phone, village, address, password,
-                createdAt: new Date().toISOString()
-            };
-
+            const newUser = { name, phone, village, address, password, ledgerUrl: '', createdAt: new Date().toISOString() };
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
 
-            showSuccess('registerSuccess', '✅ पंजीकरण सफल! कृपया लॉगिन करें');
-            
+            showSuccess('registerSuccess', '✅ पंजीकरण सफल! लॉगिन करें');
             document.getElementById('registerForm').reset();
             setTimeout(() => showScreen('loginScreen'), 2000);
-        }
-
-        function loadAdminDashboard() {
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            document.getElementById('totalFarmers').textContent = users.length;
-            
-            const farmersList = document.getElementById('farmersList');
-            farmersList.innerHTML = users.map(user => `
-                <div class="farmer-card">
-                    <div class="farmer-header">
-                        <div class="farmer-avatar">${user.name.charAt(0).toUpperCase()}</div>
-                        <div class="farmer-info">
-                            <h3>${user.name}</h3>
-                            <p>📱 ${user.phone} | 🏘️ ${user.village}</p>
-                        </div>
-                    </div>
-                    <div class="farmer-actions">
-                        <button class="action-btn primary" onclick='openChatWith(${JSON.stringify(user)})'>
-                            💬 चैट
-                        </button>
-                        <button class="action-btn secondary" onclick="window.open('tel:${user.phone}')">
-                            📞 कॉल
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadFarmerDashboard() {
-            document.getElementById('farmerNameDisplay').textContent = currentUser.name;
-            document.getElementById('farmerPhoneDisplay').textContent = '📱 ' + currentUser.phone;
-            document.getElementById('farmerVillageDisplay').textContent = '🏘️ ' + currentUser.village;
-            document.getElementById('farmerInitial').textContent = currentUser.name.charAt(0).toUpperCase();
         }
 
         function loadUserSession() {
@@ -1267,66 +1023,88 @@
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 if (currentUser.role === 'admin') {
-                    showScreen('adminDashboard');
-                    loadAdminDashboard();
+                    showScreen('adminListScreen');
+                    loadFarmerList();
                 } else {
-                    showScreen('farmerDashboard');
-                    loadFarmerDashboard();
+                    showScreen('farmerChatScreen');
+                    loadFarmerChat();
+                    startLocationTracking();
                 }
             }
         }
 
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            showScreen('loginScreen');
-            document.getElementById('loginForm').reset();
-            closeDropdown();
+        function loadFarmerList() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const list = document.getElementById('adminFarmerList');
+            
+            list.innerHTML = users.map(user => {
+                const unread = getUnreadCount('admin', user.phone);
+                const isNearby = checkProximity(user.phone);
+                return `
+                    <div class="farmer-item" onclick='selectFarmer(${JSON.stringify(user)})'>
+                        ${isNearby ? '<div class="proximity-indicator"></div>' : ''}
+                        <div class="farmer-item-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                        <div class="farmer-item-info">
+                            <div class="farmer-item-name">${user.name}</div>
+                            <div class="farmer-item-message">📱 ${user.phone} | 🏘️ ${user.village}</div>
+                            <div class="farmer-item-actions">
+                                <button class="action-icon-btn" onclick='event.stopPropagation(); openChatWith(${JSON.stringify(user)})'>💬 चैट</button>
+                                <button class="action-icon-btn secondary" onclick='event.stopPropagation(); viewLocation(${JSON.stringify(user)})'>📍 स्थान</button>
+                            </div>
+                        </div>
+                        <div class="farmer-item-meta">
+                            ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function toggleDropdown() {
-            const menu = currentUser?.role === 'admin' ? 
-                document.getElementById('dropdownMenu') : 
-                document.getElementById('farmerDropdown');
-            menu.classList.toggle('active');
-            document.querySelector('.hamburger-btn').classList.toggle('active');
-        }
-
-        function closeDropdown() {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-            document.querySelector('.hamburger-btn')?.classList.remove('active');
-        }
-
-        function openChat() {
-            currentChatUser = { name: 'निलेश सीड्स', phone: 'admin' };
-            document.getElementById('chatTitle').textContent = '💬 ' + currentChatUser.name;
-            document.getElementById('chatModal').classList.add('active');
-            loadChatMessages();
+        function selectFarmer(user) {
+            selectedFarmer = user;
+            openChatWith(user);
         }
 
         function openChatWith(user) {
-            currentChatUser = user;
-            document.getElementById('chatTitle').textContent = '💬 ' + user.name;
-            document.getElementById('chatModal').classList.add('active');
-            loadChatMessages();
+            selectedFarmer = user;
+            document.getElementById('adminChatName').textContent = user.name;
+            document.getElementById('adminChatAvatar').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('adminChatStatus').textContent = `📱 ${user.phone}`;
+            showScreen('adminChatScreen');
+            loadAdminChat();
+            markAsRead('admin', user.phone);
         }
 
-        function closeChat() {
-            document.getElementById('chatModal').classList.remove('active');
-            currentChatUser = null;
-        }
-
-        function loadChatMessages() {
-            const chatKey = getChatKey();
+        function loadFarmerChat() {
+            const chatKey = `chat_${currentUser.phone}_admin`;
             const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
-            const container = document.getElementById('chatMessages');
+            const container = document.getElementById('farmerChatMessages');
             
             container.innerHTML = messages.map(msg => `
-                <div class="message ${msg.sender === currentUser.name ? 'sent' : 'received'}">
-                    <div class="message-avatar">${msg.sender.charAt(0).toUpperCase()}</div>
-                    <div class="message-content">
-                        <div class="message-bubble">${msg.text}</div>
-                        <div class="message-time">${new Date(msg.time).toLocaleTimeString('hi-IN', {hour: '2-digit', minute: '2-digit'})}</div>
+                <div class="message ${msg.sender === currentUser.phone ? 'sent' : 'received'}">
+                    <div class="message-bubble">
+                        ${msg.attachment ? `<div class="message-attachment"><img src="${msg.attachment}" alt="attachment"></div>` : ''}
+                        <div class="message-text">${msg.text}</div>
+                        <div class="message-time">${formatTime(msg.time)}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.scrollTop = container.scrollHeight;
+            markAsRead(currentUser.phone, 'admin');
+        }
+
+        function loadAdminChat() {
+            const chatKey = `chat_${selectedFarmer.phone}_admin`;
+            const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+            const container = document.getElementById('adminChatMessages');
+            
+            container.innerHTML = messages.map(msg => `
+                <div class="message ${msg.sender === 'admin' ? 'sent' : 'received'}">
+                    <div class="message-bubble">
+                        ${msg.attachment ? `<div class="message-attachment"><img src="${msg.attachment}" alt="attachment"></div>` : ''}
+                        <div class="message-text">${msg.text}</div>
+                        <div class="message-time">${formatTime(msg.time)}</div>
                     </div>
                 </div>
             `).join('');
@@ -1334,60 +1112,335 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
+        function sendFarmerMessage() {
+            const input = document.getElementById('farmerChatInput');
             const text = input.value.trim();
-            
             if (!text) return;
-            
-            const chatKey = getChatKey();
+
+            const chatKey = `chat_${currentUser.phone}_admin`;
             const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
-            
-            messages.push({
-                sender: currentUser.name,
-                text: text,
-                time: new Date().toISOString()
-            });
-            
+            messages.push({ sender: currentUser.phone, text, time: new Date().toISOString() });
             localStorage.setItem(chatKey, JSON.stringify(messages));
+            
+            incrementUnread(currentUser.phone, 'admin');
             input.value = '';
-            loadChatMessages();
+            loadFarmerChat();
         }
 
-        function getChatKey() {
-            if (currentUser.role === 'admin') {
-                return `chat_admin_${currentChatUser.phone}`;
+        function sendAdminMessage() {
+            const input = document.getElementById('adminChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatKey = `chat_${selectedFarmer.phone}_admin`;
+            const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+            messages.push({ sender: 'admin', text, time: new Date().toISOString() });
+            localStorage.setItem(chatKey, JSON.stringify(messages));
+            
+            incrementUnread('admin', selectedFarmer.phone);
+            input.value = '';
+            loadAdminChat();
+        }
+
+        function getUnreadCount(viewer, chatWith) {
+            const key = `unread_${viewer}_${chatWith}`;
+            return parseInt(localStorage.getItem(key) || '0');
+        }
+
+        function incrementUnread(viewer, chatWith) {
+            const key = `unread_${viewer}_${chatWith}`;
+            const count = getUnreadCount(viewer, chatWith);
+            localStorage.setItem(key, count + 1);
+        }
+
+        function markAsRead(viewer, chatWith) {
+            const key = `unread_${viewer}_${chatWith}`;
+            localStorage.setItem(key, '0');
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function startLocationTracking() {
+            if (!navigator.geolocation) return;
+            
+            locationWatchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLoc = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        timestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem(`location_${currentUser.phone}`, JSON.stringify(userLoc));
+                    checkAndNotifyProximity(userLoc);
+                },
+                (error) => console.error('Location error:', error),
+                { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+            );
+        }
+
+        function checkAndNotifyProximity(userLoc) {
+            const distance = calculateDistance(userLoc.lat, userLoc.lng, shopLocation.lat, shopLocation.lng);
+            const proximityKey = `proximity_${currentUser.phone}`;
+            const lastNotified = localStorage.getItem(proximityKey);
+            
+            if (distance <= 100 && !lastNotified) {
+                localStorage.setItem(proximityKey, 'true');
+                // This would trigger admin notification
+                showNotification('📍 किसान नजदीक है!', `${currentUser.name} दुकान से ${Math.round(distance)}m दूर है`);
+            } else if (distance > 100) {
+                localStorage.removeItem(proximityKey);
+            }
+        }
+
+        function checkProximity(phone) {
+            const locData = localStorage.getItem(`location_${phone}`);
+            if (!locData) return false;
+            
+            const userLoc = JSON.parse(locData);
+            const distance = calculateDistance(userLoc.lat, userLoc.lng, shopLocation.lat, shopLocation.lng);
+            return distance <= 100;
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+        }
+
+        function viewLocation(user) {
+            const locData = localStorage.getItem(`location_${user.phone}`);
+            if (!locData) {
+                alert('स्थान उपलब्ध नहीं है');
+                return;
+            }
+
+            selectedFarmer = user;
+            document.getElementById('mapFarmerName').textContent = user.name + ' का स्थान';
+            showScreen('mapScreen');
+            
+            setTimeout(() => {
+                const userLoc = JSON.parse(locData);
+                if (!map) {
+                    map = L.map('map').setView([userLoc.lat, userLoc.lng], 16);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                } else {
+                    map.setView([userLoc.lat, userLoc.lng], 16);
+                }
+                
+                L.marker([userLoc.lat, userLoc.lng]).addTo(map).bindPopup(user.name).openPopup();
+                L.marker([shopLocation.lat, shopLocation.lng]).addTo(map).bindPopup('निलेश सीड्स').openPopup();
+            }, 100);
+        }
+
+        function showFarmerLocation() {
+            viewLocation(selectedFarmer);
+        }
+
+        function openInGoogleMaps() {
+            const locData = localStorage.getItem(`location_${selectedFarmer.phone}`);
+            if (locData) {
+                const userLoc = JSON.parse(locData);
+                window.open(`https://www.google.com/maps/dir/?api=1&origin=${shopLocation.lat},${shopLocation.lng}&destination=${userLoc.lat},${userLoc.lng}`, '_blank');
+            }
+        }
+
+        function openLedger() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.phone === currentUser.phone);
+            
+            if (user?.ledgerUrl) {
+                window.open(user.ledgerUrl, '_blank');
             } else {
-                return `chat_admin_${currentUser.phone}`;
+                alert('लेजर लिंक उपलब्ध नहीं है। कृपया एडमिन से संपर्क करें।');
             }
         }
 
         function showProfile() {
             const content = document.getElementById('profileContent');
-            content.innerHTML = `
-                <div class="farmer-header" style="margin-bottom: 20px;">
-                    <div class="farmer-avatar" style="width: 80px; height: 80px; font-size: 32px;">
-                        ${currentUser.name.charAt(0).toUpperCase()}
+            
+            if (currentUser.role === 'admin') {
+                content.innerHTML = `
+                    <div class="profile-avatar-large">N</div>
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">नाम</div>
+                            <div class="profile-info-value">निलेश सीड्स</div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">भूमिका</div>
+                            <div class="profile-info-value">👑 Admin</div>
+                        </div>
                     </div>
-                    <div class="farmer-info">
-                        <h3 style="font-size: 22px;">${currentUser.name}</h3>
-                        <p>${currentUser.role === 'admin' ? '👑 एडमिन' : '👨‍🌾 किसान'}</p>
+                    <div class="profile-actions">
+                        <button class="profile-btn danger" onclick="logout()">लॉगआउट</button>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="profile-avatar-large">${currentUser.name.charAt(0).toUpperCase()}</div>
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">नाम</div>
+                            <div class="profile-info-value">${currentUser.name}</div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">मोबाइल</div>
+                            <div class="profile-info-value">${currentUser.phone}</div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">गांव</div>
+                            <div class="profile-info-value">${currentUser.village}</div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">पता</div>
+                            <div class="profile-info-value">${currentUser.address}</div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="profile-btn danger" onclick="logout()">लॉगआउट</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function showSelectedFarmerProfile() {
+            const content = document.getElementById('profileContent');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.phone === selectedFarmer.phone);
+            
+            content.innerHTML = `
+                <div class="profile-avatar-large">${user.name.charAt(0).toUpperCase()}</div>
+                <div class="profile-info">
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">नाम</div>
+                        <div class="profile-info-value">${user.name}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">मोबाइल</div>
+                        <div class="profile-info-value">${user.phone}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">गांव</div>
+                        <div class="profile-info-value">${user.village}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">पता</div>
+                        <div class="profile-info-value">${user.address}</div>
                     </div>
                 </div>
-                ${currentUser.role !== 'admin' ? `
-                    <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
-                        <p style="margin-bottom: 12px;"><strong>📱 मोबाइल:</strong> ${currentUser.phone}</p>
-                        <p style="margin-bottom: 12px;"><strong>🏘️ गांव:</strong> ${currentUser.village}</p>
-                        <p><strong>📍 पता:</strong> ${currentUser.address}</p>
-                    </div>
-                ` : ''}
+                <div class="ledger-input-group">
+                    <label>📒 लेजर लिंक</label>
+                    <input type="url" id="ledgerUrlInput" value="${user.ledgerUrl || ''}" placeholder="https://example.com/ledger">
+                    <button class="profile-btn primary" onclick="saveLedgerUrl()">लिंक सेव करें</button>
+                </div>
+                <div class="profile-actions">
+                    <button class="profile-btn secondary" onclick="window.open('tel:${user.phone}')">📞 कॉल करें</button>
+                    <button class="profile-btn primary" onclick="closeProfile()">बंद करें</button>
+                </div>
             `;
+            
             document.getElementById('profileModal').classList.add('active');
-            closeDropdown();
+        }
+
+        function saveLedgerUrl() {
+            const url = document.getElementById('ledgerUrlInput').value.trim();
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIndex = users.findIndex(u => u.phone === selectedFarmer.phone);
+            
+            if (userIndex !== -1) {
+                users[userIndex].ledgerUrl = url;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('✅ लेजर लिंक सेव हो गया!');
+                closeProfile();
+            }
         }
 
         function closeProfile() {
             document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function backToFarmerList() {
+            showScreen('adminListScreen');
+            loadFarmerList();
+        }
+
+        function backToAdminChat() {
+            showScreen('adminChatScreen');
+        }
+
+        function logout() {
+            if (locationWatchId) {
+                navigator.geolocation.clearWatch(locationWatchId);
+            }
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            showScreen('loginScreen');
+            closeProfile();
+        }
+
+        function makeVideoCall() {
+            alert('📹 वीडियो कॉल फीचर जल्द आ रहा है!');
+        }
+
+        function makeVoiceCall() {
+            const phone = currentUser.role === 'admin' ? selectedFarmer.phone : '9876543210';
+            window.open(`tel:${phone}`);
+        }
+
+        function selectAttachment() {
+            document.getElementById('attachmentInput').click();
+        }
+
+        function handleAttachment(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                // In real app, upload to server. For demo, store base64
+                alert('📎 फाइल अटैच हो गई! (डेमो में फाइल अपलोड नहीं होता)');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showEmojiPicker() {
+            alert('😊 Emoji picker coming soon!');
+        }
+
+        function showFarmerMenu() {
+            alert('Menu options');
+        }
+
+        function showAdminMenu() {
+            if (confirm('क्या आप लॉगआउट करना चाहते हैं?')) {
+                logout();
+            }
+        }
+
+        function showAdminChatMenu() {
+            alert('Chat options');
+        }
+
+        function showNotification(title, message) {
+            document.getElementById('notifTitle').textContent = title;
+            document.getElementById('notifMessage').textContent = message;
+            const toast = document.getElementById('notificationToast');
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 5000);
         }
 
         function showError(id, msg) {
@@ -1403,13 +1456,6 @@
             el.classList.add('show');
             setTimeout(() => el.classList.remove('show'), 3000);
         }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.hamburger-btn') && !e.target.closest('.dropdown-menu')) {
-                closeDropdown();
-            }
-        });
     </script>
 </body>
 </html>
