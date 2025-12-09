@@ -296,7 +296,19 @@
 
         .message-attachment img {
             max-width: 100%;
+            max-height: 300px;
             border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .message-attachment video {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .message-attachment a {
+            color: var(--wa-blue);
+            text-decoration: none;
         }
 
         /* Chat Input */
@@ -428,7 +440,7 @@
         .proximity-indicator {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -473,6 +485,126 @@
         .map-container {
             flex: 1;
             position: relative;
+        }
+
+        /* Call Screen */
+        .call-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--wa-teal), var(--wa-green-dark));
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .call-screen.active {
+            display: flex;
+        }
+
+        .call-info {
+            text-align: center;
+            color: white;
+        }
+
+        .call-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 20px;
+        }
+
+        .call-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .call-status {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .call-timer {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .call-controls {
+            display: flex;
+            gap: 30px;
+        }
+
+        .call-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .call-btn.end {
+            background: var(--wa-red);
+            color: white;
+        }
+
+        .call-btn.mute {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .call-btn.mute.active {
+            background: white;
+            color: var(--wa-teal);
+        }
+
+        /* Video Call */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .video-main {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-self {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 160px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+
+        .video-self video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Profile Modal */
@@ -634,33 +766,42 @@
             margin-bottom: 4px;
         }
 
-        /* Attachment Preview */
-        .attachment-preview {
-            position: fixed;
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
             bottom: 70px;
             left: 10px;
-            right: 10px;
             background: white;
             border-radius: 10px;
             padding: 15px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
             display: none;
+            max-width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .attachment-preview.active {
+        .emoji-picker.active {
             display: block;
         }
 
-        .attachment-preview img {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 8px;
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
         }
 
-        .attachment-preview-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        .emoji-item {
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .emoji-item:hover {
+            background: #F0F0F0;
         }
 
         /* Notification Toast */
@@ -675,6 +816,7 @@
             display: none;
             z-index: 2000;
             animation: slideInRight 0.3s ease;
+            max-width: 350px;
         }
 
         @keyframes slideInRight {
@@ -710,25 +852,14 @@
             color: #667781;
         }
 
-        /* Loading */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .login-box {
                 padding: 30px 20px;
+            }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(6, 1fr);
             }
         }
     </style>
@@ -810,18 +941,21 @@
                 </div>
             </div>
             <div class="wa-header-actions">
-                <span onclick="makeVideoCall()">📹</span>
-                <span onclick="makeVoiceCall()">📞</span>
+                <span onclick="initiateCall('video', 'admin')">📹</span>
+                <span onclick="initiateCall('voice', 'admin')">📞</span>
                 <span onclick="showFarmerMenu()">⋮</span>
             </div>
         </div>
         <div class="chat-container" id="farmerChatMessages"></div>
+        <div class="emoji-picker" id="farmerEmojiPicker">
+            <div class="emoji-grid" id="farmerEmojiGrid"></div>
+        </div>
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <span class="input-icon" onclick="showEmojiPicker()">😊</span>
+                <span class="input-icon" onclick="toggleEmojiPicker('farmer')">😊</span>
                 <input type="text" class="chat-input" id="farmerChatInput" placeholder="संदेश लिखें...">
-                <span class="input-icon" onclick="selectAttachment()">📎</span>
-                <input type="file" id="attachmentInput" style="display:none" accept="image/*,video/*,application/pdf">
+                <span class="input-icon" onclick="selectAttachment('farmer')">📎</span>
+                <input type="file" id="farmerAttachmentInput" style="display:none" accept="image/*,video/*,application/pdf">
             </div>
             <button class="send-btn" onclick="sendFarmerMessage()">📤</button>
         </div>
@@ -871,17 +1005,21 @@
             </div>
             <div class="wa-header-actions">
                 <span onclick="showFarmerLocation()">📍</span>
-                <span onclick="makeVideoCall()">📹</span>
-                <span onclick="makeVoiceCall()">📞</span>
+                <span onclick="initiateCall('video', selectedFarmer)">📹</span>
+                <span onclick="initiateCall('voice', selectedFarmer)">📞</span>
                 <span onclick="showAdminChatMenu()">⋮</span>
             </div>
         </div>
         <div class="chat-container" id="adminChatMessages"></div>
+        <div class="emoji-picker" id="adminEmojiPicker">
+            <div class="emoji-grid" id="adminEmojiGrid"></div>
+        </div>
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <span class="input-icon" onclick="showEmojiPicker()">😊</span>
+                <span class="input-icon" onclick="toggleEmojiPicker('admin')">😊</span>
                 <input type="text" class="chat-input" id="adminChatInput" placeholder="संदेश लिखें...">
-                <span class="input-icon" onclick="selectAttachment()">📎</span>
+                <span class="input-icon" onclick="selectAttachment('admin')">📎</span>
+                <input type="file" id="adminAttachmentInput" style="display:none" accept="image/*,video/*,application/pdf">
             </div>
             <button class="send-btn" onclick="sendAdminMessage()">📤</button>
         </div>
@@ -903,6 +1041,27 @@
         </div>
         <div class="map-container">
             <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Call Screen -->
+    <div id="callScreen" class="call-screen">
+        <div class="call-info">
+            <div class="call-avatar" id="callAvatar">N</div>
+            <div class="call-name" id="callName">निलेश सीड्स</div>
+            <div class="call-status" id="callStatus">कॉल कर रहे हैं...</div>
+            <div class="call-timer" id="callTimer" style="display:none;">00:00</div>
+        </div>
+        <div id="videoContainer" class="video-container" style="display:none;">
+            <video id="remoteVideo" class="video-main" autoplay playsinline></video>
+            <div class="video-self">
+                <video id="localVideo" autoplay playsinline muted></video>
+            </div>
+        </div>
+        <div class="call-controls">
+            <button class="call-btn mute" id="muteBtn" onclick="toggleMute()">🎤</button>
+            <button class="call-btn end" onclick="endCall()">📞</button>
+            <button class="call-btn mute" id="videoToggleBtn" onclick="toggleVideo()" style="display:none;">📹</button>
         </div>
     </div>
 
@@ -933,14 +1092,24 @@
         let selectedFarmer = null;
         let locationWatchId = null;
         let map = null;
-        let shopLocation = { lat: 26.8467, lng: 80.9462 }; // Extracted from Google Maps link
+        let shopLocation = { lat: 26.8467, lng: 80.9462 };
+        let chatRefreshInterval = null;
+        let callTimer = null;
+        let callDuration = 0;
+        let isMuted = false;
+        let isVideoEnabled = true;
+        let localStream = null;
+
+        const emojis = ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','☺️','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄','💋','🩸'];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadUserSession();
             setupEventListeners();
+            initializeEmojiPickers();
             if (currentUser?.role === 'farmer') {
                 startLocationTracking();
+                startChatRefresh();
             }
         });
 
@@ -953,7 +1122,38 @@
             document.getElementById('adminChatInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendAdminMessage();
             });
-            document.getElementById('attachmentInput').addEventListener('change', handleAttachment);
+            document.getElementById('farmerAttachmentInput').addEventListener('change', (e) => handleAttachment(e, 'farmer'));
+            document.getElementById('adminAttachmentInput').addEventListener('change', (e) => handleAttachment(e, 'admin'));
+        }
+
+        function initializeEmojiPickers() {
+            const farmerGrid = document.getElementById('farmerEmojiGrid');
+            const adminGrid = document.getElementById('adminEmojiGrid');
+            
+            emojis.forEach(emoji => {
+                const farmerItem = document.createElement('div');
+                farmerItem.className = 'emoji-item';
+                farmerItem.textContent = emoji;
+                farmerItem.onclick = () => insertEmoji(emoji, 'farmer');
+                farmerGrid.appendChild(farmerItem);
+
+                const adminItem = document.createElement('div');
+                adminItem.className = 'emoji-item';
+                adminItem.textContent = emoji;
+                adminItem.onclick = () => insertEmoji(emoji, 'admin');
+                adminGrid.appendChild(adminItem);
+            });
+        }
+
+        function toggleEmojiPicker(type) {
+            const picker = document.getElementById(type + 'EmojiPicker');
+            picker.classList.toggle('active');
+        }
+
+        function insertEmoji(emoji, type) {
+            const input = document.getElementById(type + 'ChatInput');
+            input.value += emoji;
+            input.focus();
         }
 
         function showScreen(screenId) {
@@ -966,16 +1166,15 @@
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            // Admin login
             if (username === 'Nilesh Seeds' && password === '1008') {
                 currentUser = { username: 'Nilesh Seeds', role: 'admin', name: 'Nilesh Seeds' };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 showScreen('adminListScreen');
                 loadFarmerList();
+                startChatRefresh();
                 return;
             }
 
-            // Farmer login
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const user = users.find(u => (u.phone === username || u.name === username) && u.password === password);
 
@@ -985,6 +1184,7 @@
                 showScreen('farmerChatScreen');
                 loadFarmerChat();
                 startLocationTracking();
+                startChatRefresh();
             } else {
                 showError('loginError', 'गलत उपयोगकर्ता नाम या पासवर्ड');
             }
@@ -1025,12 +1225,28 @@
                 if (currentUser.role === 'admin') {
                     showScreen('adminListScreen');
                     loadFarmerList();
+                    startChatRefresh();
                 } else {
                     showScreen('farmerChatScreen');
                     loadFarmerChat();
                     startLocationTracking();
+                    startChatRefresh();
                 }
             }
+        }
+
+        function startChatRefresh() {
+            if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+            chatRefreshInterval = setInterval(() => {
+                if (currentUser?.role === 'farmer') {
+                    loadFarmerChat();
+                } else if (currentUser?.role === 'admin' && selectedFarmer) {
+                    loadAdminChat();
+                    loadFarmerList();
+                } else if (currentUser?.role === 'admin') {
+                    loadFarmerList();
+                }
+            }, 2000);
         }
 
         function loadFarmerList() {
@@ -1040,13 +1256,15 @@
             list.innerHTML = users.map(user => {
                 const unread = getUnreadCount('admin', user.phone);
                 const isNearby = checkProximity(user.phone);
+                const lastMsg = getLastMessage(user.phone);
+                
                 return `
                     <div class="farmer-item" onclick='selectFarmer(${JSON.stringify(user)})'>
                         ${isNearby ? '<div class="proximity-indicator"></div>' : ''}
                         <div class="farmer-item-avatar">${user.name.charAt(0).toUpperCase()}</div>
                         <div class="farmer-item-info">
                             <div class="farmer-item-name">${user.name}</div>
-                            <div class="farmer-item-message">📱 ${user.phone} | 🏘️ ${user.village}</div>
+                            <div class="farmer-item-message">${lastMsg || '📱 ' + user.phone + ' | 🏘️ ' + user.village}</div>
                             <div class="farmer-item-actions">
                                 <button class="action-icon-btn" onclick='event.stopPropagation(); openChatWith(${JSON.stringify(user)})'>💬 चैट</button>
                                 <button class="action-icon-btn secondary" onclick='event.stopPropagation(); viewLocation(${JSON.stringify(user)})'>📍 स्थान</button>
@@ -1058,6 +1276,14 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function getLastMessage(phone) {
+            const chatKey = `chat_${phone}_admin`;
+            const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+            if (messages.length === 0) return '';
+            const last = messages[messages.length - 1];
+            return last.text.substring(0, 30) + (last.text.length > 30 ? '...' : '');
         }
 
         function selectFarmer(user) {
@@ -1083,8 +1309,8 @@
             container.innerHTML = messages.map(msg => `
                 <div class="message ${msg.sender === currentUser.phone ? 'sent' : 'received'}">
                     <div class="message-bubble">
-                        ${msg.attachment ? `<div class="message-attachment"><img src="${msg.attachment}" alt="attachment"></div>` : ''}
-                        <div class="message-text">${msg.text}</div>
+                        ${msg.attachment ? renderAttachment(msg.attachment) : ''}
+                        ${msg.text ? `<div class="message-text">${msg.text}</div>` : ''}
                         <div class="message-time">${formatTime(msg.time)}</div>
                     </div>
                 </div>
@@ -1102,14 +1328,25 @@
             container.innerHTML = messages.map(msg => `
                 <div class="message ${msg.sender === 'admin' ? 'sent' : 'received'}">
                     <div class="message-bubble">
-                        ${msg.attachment ? `<div class="message-attachment"><img src="${msg.attachment}" alt="attachment"></div>` : ''}
-                        <div class="message-text">${msg.text}</div>
+                        ${msg.attachment ? renderAttachment(msg.attachment) : ''}
+                        ${msg.text ? `<div class="message-text">${msg.text}</div>` : ''}
                         <div class="message-time">${formatTime(msg.time)}</div>
                     </div>
                 </div>
             `).join('');
             
             container.scrollTop = container.scrollHeight;
+        }
+
+        function renderAttachment(attachment) {
+            if (attachment.type === 'image') {
+                return `<div class="message-attachment"><img src="${attachment.data}" alt="image" onclick="window.open('${attachment.data}', '_blank')"></div>`;
+            } else if (attachment.type === 'video') {
+                return `<div class="message-attachment"><video src="${attachment.data}" controls></video></div>`;
+            } else if (attachment.type === 'pdf') {
+                return `<div class="message-attachment"><a href="${attachment.data}" target="_blank">📄 ${attachment.name}</a></div>`;
+            }
+            return '';
         }
 
         function sendFarmerMessage() {
@@ -1125,6 +1362,7 @@
             incrementUnread(currentUser.phone, 'admin');
             input.value = '';
             loadFarmerChat();
+            document.getElementById('farmerEmojiPicker').classList.remove('active');
         }
 
         function sendAdminMessage() {
@@ -1140,6 +1378,42 @@
             incrementUnread('admin', selectedFarmer.phone);
             input.value = '';
             loadAdminChat();
+            document.getElementById('adminEmojiPicker').classList.remove('active');
+        }
+
+        function handleAttachment(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const attachment = {
+                    type: file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : 'pdf',
+                    data: event.target.result,
+                    name: file.name
+                };
+
+                if (type === 'farmer') {
+                    const chatKey = `chat_${currentUser.phone}_admin`;
+                    const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+                    messages.push({ sender: currentUser.phone, text: '', attachment, time: new Date().toISOString() });
+                    localStorage.setItem(chatKey, JSON.stringify(messages));
+                    incrementUnread(currentUser.phone, 'admin');
+                    loadFarmerChat();
+                } else {
+                    const chatKey = `chat_${selectedFarmer.phone}_admin`;
+                    const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+                    messages.push({ sender: 'admin', text: '', attachment, time: new Date().toISOString() });
+                    localStorage.setItem(chatKey, JSON.stringify(messages));
+                    incrementUnread('admin', selectedFarmer.phone);
+                    loadAdminChat();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function selectAttachment(type) {
+            document.getElementById(type + 'AttachmentInput').click();
         }
 
         function getUnreadCount(viewer, chatWith) {
@@ -1188,8 +1462,12 @@
             
             if (distance <= 100 && !lastNotified) {
                 localStorage.setItem(proximityKey, 'true');
-                // This would trigger admin notification
-                showNotification('📍 किसान नजदीक है!', `${currentUser.name} दुकान से ${Math.round(distance)}m दूर है`);
+                const notifData = {
+                    title: '📍 किसान नजदीक है!',
+                    message: `${currentUser.name} दुकान से ${Math.round(distance)}m दूर है`,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem(`proximity_notif_${currentUser.phone}`, JSON.stringify(notifData));
             } else if (distance > 100) {
                 localStorage.removeItem(proximityKey);
             }
@@ -1205,7 +1483,7 @@
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // Earth radius in meters
+            const R = 6371e3;
             const φ1 = lat1 * Math.PI / 180;
             const φ2 = lat2 * Math.PI / 180;
             const Δφ = (lat2 - lat1) * Math.PI / 180;
@@ -1237,10 +1515,13 @@
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 } else {
                     map.setView([userLoc.lat, userLoc.lng], 16);
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker) map.removeLayer(layer);
+                    });
                 }
                 
                 L.marker([userLoc.lat, userLoc.lng]).addTo(map).bindPopup(user.name).openPopup();
-                L.marker([shopLocation.lat, shopLocation.lng]).addTo(map).bindPopup('निलेश सीड्स').openPopup();
+                L.marker([shopLocation.lat, shopLocation.lng]).addTo(map).bindPopup('निलेश सीड्स');
             }, 100);
         }
 
@@ -1265,6 +1546,99 @@
             } else {
                 alert('लेजर लिंक उपलब्ध नहीं है। कृपया एडमिन से संपर्क करें।');
             }
+        }
+
+        function initiateCall(type, target) {
+            const callScreen = document.getElementById('callScreen');
+            const videoContainer = document.getElementById('videoContainer');
+            const videoToggleBtn = document.getElementById('videoToggleBtn');
+            
+            let targetName = '';
+            if (target === 'admin') {
+                targetName = 'निलेश सीड्स';
+                document.getElementById('callAvatar').textContent = 'N';
+            } else {
+                targetName = target.name;
+                document.getElementById('callAvatar').textContent = target.name.charAt(0).toUpperCase();
+            }
+            
+            document.getElementById('callName').textContent = targetName;
+            document.getElementById('callStatus').textContent = type === 'video' ? 'वीडियो कॉल कर रहे हैं...' : 'कॉल कर रहे हैं...';
+            
+            if (type === 'video') {
+                videoContainer.style.display = 'block';
+                videoToggleBtn.style.display = 'block';
+                startVideoCall();
+            } else {
+                videoContainer.style.display = 'none';
+                videoToggleBtn.style.display = 'none';
+            }
+            
+            callScreen.classList.add('active');
+            
+            // Simulate call connection
+            setTimeout(() => {
+                document.getElementById('callStatus').textContent = 'कनेक्टेड';
+                document.getElementById('callTimer').style.display = 'block';
+                startCallTimer();
+            }, 2000);
+        }
+
+        async function startVideoCall() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('localVideo').srcObject = localStream;
+                // In real app, connect to WebRTC peer
+            } catch (err) {
+                console.error('Video access error:', err);
+                alert('कैमरा/माइक एक्सेस की अनुमति दें');
+            }
+        }
+
+        function startCallTimer() {
+            callDuration = 0;
+            callTimer = setInterval(() => {
+                callDuration++;
+                const mins = Math.floor(callDuration / 60).toString().padStart(2, '0');
+                const secs = (callDuration % 60).toString().padStart(2, '0');
+                document.getElementById('callTimer').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('muteBtn');
+            btn.classList.toggle('active');
+            btn.textContent = isMuted ? '🔇' : '🎤';
+            if (localStream) {
+                localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+            }
+        }
+
+        function toggleVideo() {
+            isVideoEnabled = !isVideoEnabled;
+            const btn = document.getElementById('videoToggleBtn');
+            btn.classList.toggle('active');
+            btn.textContent = isVideoEnabled ? '📹' : '🚫';
+            if (localStream) {
+                localStream.getVideoTracks().forEach(track => track.enabled = isVideoEnabled);
+            }
+        }
+
+        function endCall() {
+            if (callTimer) clearInterval(callTimer);
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            document.getElementById('callScreen').classList.remove('active');
+            document.getElementById('callTimer').style.display = 'none';
+            isMuted = false;
+            isVideoEnabled = true;
+            document.getElementById('muteBtn').classList.remove('active');
+            document.getElementById('muteBtn').textContent = '🎤';
+            document.getElementById('videoToggleBtn').classList.remove('active');
+            document.getElementById('videoToggleBtn').textContent = '📹';
         }
 
         function showProfile() {
@@ -1386,43 +1760,19 @@
             if (locationWatchId) {
                 navigator.geolocation.clearWatch(locationWatchId);
             }
+            if (chatRefreshInterval) {
+                clearInterval(chatRefreshInterval);
+            }
             localStorage.removeItem('currentUser');
             currentUser = null;
             showScreen('loginScreen');
             closeProfile();
         }
 
-        function makeVideoCall() {
-            alert('📹 वीडियो कॉल फीचर जल्द आ रहा है!');
-        }
-
-        function makeVoiceCall() {
-            const phone = currentUser.role === 'admin' ? selectedFarmer.phone : '9876543210';
-            window.open(`tel:${phone}`);
-        }
-
-        function selectAttachment() {
-            document.getElementById('attachmentInput').click();
-        }
-
-        function handleAttachment(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                // In real app, upload to server. For demo, store base64
-                alert('📎 फाइल अटैच हो गई! (डेमो में फाइल अपलोड नहीं होता)');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function showEmojiPicker() {
-            alert('😊 Emoji picker coming soon!');
-        }
-
         function showFarmerMenu() {
-            alert('Menu options');
+            if (confirm('क्या आप लॉगआउट करना चाहते हैं?')) {
+                logout();
+            }
         }
 
         function showAdminMenu() {
